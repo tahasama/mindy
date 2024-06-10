@@ -1,7 +1,9 @@
+import { ThemedText } from "@/components/ThemedText";
 import React from "react";
+import { View, Text } from "react-native";
 
 const EducationalTabs = () => {
-  return <div>EducationalTabs</div>;
+  return <ThemedText>EducationalTabs</ThemedText>;
 };
 
 export default EducationalTabs;
