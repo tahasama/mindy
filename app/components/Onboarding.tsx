@@ -1,85 +1,75 @@
-import React, { useState } from "react";
 import {
   View,
   Text,
-  Image,
-  TextInput,
-  Button,
   StyleSheet,
-  Dimensions,
+  Button,
+  ScrollView,
+  TextInput,
 } from "react-native";
+import React, { useState } from "react";
+import { useNavigation } from "expo-router";
+import ProfileSetup from "./ProfileSetup";
+import { Image } from "expo-image";
+import FeatureHighlight2 from "./FeatureHighlight2";
 import Animated, {
   useAnimatedScrollHandler,
-  useSharedValue,
   useAnimatedStyle,
-  interpolateColor,
+  useHandler,
+  useSharedValue,
 } from "react-native-reanimated";
-import { useNavigation } from "@react-navigation/native";
 
-const { height } = Dimensions.get("window");
-
-const OnboardingScreen = () => {
+const Onboarding = () => {
+  const blurhash =
+    "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
+  const navigation = useNavigation<any>();
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
-  const navigation = useNavigation<any>();
-  const scrollY = useSharedValue(0);
-
-  const scrollHandler = useAnimatedScrollHandler((event) => {
-    scrollY.value = event.contentOffset.y;
-  });
-
-  const backgroundColorStyle = useAnimatedStyle(() => {
-    return {
-      backgroundColor: interpolateColor(
-        scrollY.value,
-        [0, height],
-        ["#f5f5f5", "#e0f7fa"]
-      ),
-    };
-  });
 
   const handleCompleteSetup = () => {
+    // Implement profile setup logic
     navigation.navigate("Dashboard"); // Redirect to the dashboard after setup
   };
 
-  return (
-    <Animated.ScrollView
-      contentContainerStyle={styles.container}
-      onScroll={scrollHandler}
-      scrollEventThrottle={16}
-    >
-      <Animated.View style={[styles.section, backgroundColorStyle]}>
-        <Image
-          style={styles.image}
-          source={require("../../assets/images/landing.jpg")}
-          // placeholder={{ blurhash: 'LKO2?U%2Tw=w]~RBVZRi};RPxuwH' }}
-          // contentFit="contain"
-          // transition={1000}
-        />
-        <Text style={styles.title}>
-          Your journey to well-being starts here.
-        </Text>
-        <Text style={styles.subtitle}>
-          Taking care of your mental health is essential for a balanced and
-          fulfilling life.
-        </Text>
-        <Text style={styles.subtitle}>
-          Looking to enhance your mindfulness? Or simply find a moment of peace,
-          we're here to support you.
-        </Text>
-        <Text style={styles.subtitle}>
-          Mindy offers the tools and resources to help you every step of the
-          way!
-        </Text>
-      </Animated.View>
+  const width = useSharedValue(50);
 
-      <Animated.View style={[styles.section, backgroundColorStyle]}>
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      width: width.value,
+    };
+  });
+
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+      <Image
+        style={styles.image}
+        source={require("../../assets/images/landing.jpg")}
+        placeholder={{ blurhash }}
+        contentFit="contain"
+        transition={1000}
+      />
+      <Text style={styles.title}>Your journey to well-being starts here.</Text>
+      <Text style={styles.subtitle}>
+        Taking care of your mental health is essential for a balanced and
+        fulfilling life.
+      </Text>
+
+      <Text style={styles.subtitle}>
+        Looking to enhance your mindfulness? or simply find a moment of peace,
+        we're here to support you.
+      </Text>
+
+      <Text style={styles.subtitle}>
+        Mindy offers the tools and resources to help youe every step of the way
+        !
+      </Text>
+
+      <View style={styles.section}>
         <Image
           style={styles.image}
           source={require("../../assets/images/meditation.jpg")}
-          // placeholder={{ blurhash: 'LKO2?U%2Tw=w]~RBVZRi};RPxuwH' }}
-          // contentFit="contain"
-          // transition={1000}
+          placeholder={{ blurhash }}
+          contentFit="contain"
+          transition={1000}
         />
         <Text style={styles.featureTitle}>Track Your Mood</Text>
         <Text style={styles.subtitle}>
@@ -90,15 +80,15 @@ const OnboardingScreen = () => {
           Access a variety of guided meditations to help you relax and
           de-stress.
         </Text>
-      </Animated.View>
+      </View>
 
-      <Animated.View style={[styles.section, backgroundColorStyle]}>
+      <View style={styles.section}>
         <Image
           style={styles.image}
           source={require("../../assets/images/mood.jpg")}
-          // placeholder={{ blurhash: 'LKO2?U%2Tw=w]~RBVZRi};RPxuwH' }}
-          // contentFit="contain"
-          // transition={1000}
+          placeholder={{ blurhash }}
+          contentFit="contain"
+          transition={1000}
         />
         <Text style={styles.featureTitle}>Personalized Insights</Text>
         <Text style={styles.subtitle}>
@@ -110,10 +100,12 @@ const OnboardingScreen = () => {
           Connect with a community of individuals who understand and support
           your journey.
         </Text>
-      </Animated.View>
+      </View>
+      <Animated.View style={[styles.box, animatedStyle]} />
 
       <View style={styles.profileSetup}>
         <Text style={styles.title}>Set Up Your Profile</Text>
+        <Text style={styles.title}>{age} 000000</Text>
         <TextInput
           style={styles.input}
           placeholder="Name"
@@ -129,7 +121,7 @@ const OnboardingScreen = () => {
         />
         <Button title="Complete Setup" onPress={handleCompleteSetup} />
       </View>
-    </Animated.ScrollView>
+    </ScrollView>
   );
 };
 
@@ -139,16 +131,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#f5f5f5",
+    // padding: 16,
   },
-  section: {
-    width: "100%",
-    alignItems: "center",
-    paddingVertical: 20,
+  box: {
+    height: 50,
+    backgroundColor: "blue",
   },
   image: {
     width: "100%",
-    height: height / 3,
-    marginBottom: 16,
+    aspectRatio: 1,
+    marginBottom: 12,
     borderRadius: 8,
   },
   title: {
@@ -160,7 +152,8 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 18,
     textAlign: "center",
-    marginBottom: 16,
+    marginBottom: 12,
+    paddingHorizontal: 16,
   },
   featureTitle: {
     fontSize: 20,
@@ -168,6 +161,24 @@ const styles = StyleSheet.create({
     marginTop: 24,
     marginBottom: 8,
     textAlign: "center",
+  },
+  section: {
+    marginBottom: 32,
+    width: "100%",
+    alignItems: "center",
+  },
+  benefit: {
+    fontSize: 16,
+    textAlign: "left",
+    marginVertical: 4,
+    paddingHorizontal: 16,
+  },
+  testimonial: {
+    fontSize: 16,
+    fontStyle: "italic",
+    textAlign: "center",
+    marginVertical: 8,
+    paddingHorizontal: 16,
   },
   profileSetup: {
     width: "100%",
@@ -185,4 +196,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OnboardingScreen;
+export default Onboarding;
