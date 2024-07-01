@@ -6,8 +6,9 @@ import {
   ScrollView,
   TextInput,
   Pressable,
+  TouchableOpacity,
+  StatusBar,
 } from "react-native";
-import React, { useState } from "react";
 import { Link, useNavigation } from "expo-router";
 import ProfileSetup from "../ProfileSetup";
 import { Image } from "expo-image";
@@ -19,18 +20,18 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 import ModalScreen from "./modal";
+import { useState } from "react";
 
 const Onboarding = () => {
   const blurhash =
     "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
   const navigation = useNavigation<any>();
-  const [name, setName] = useState("");
-  const [age, setAge] = useState("");
+
   const [modalVisible, setModalVisible] = useState(false);
 
-  const handleCompleteSetup = () => {
+  const handleCompleteSetup = (tab: string) => {
     // Implement profile setup logic
-    navigation.navigate("Activities"); // Redirect to the dashboard after setup
+    navigation.navigate(tab); // Redirect to the dashboard after setup
   };
 
   const width = useSharedValue(50);
@@ -43,6 +44,7 @@ const Onboarding = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
       <Image
         style={styles.image}
         source={require("../../../assets/images/landing.jpg")}
@@ -70,11 +72,7 @@ const Onboarding = () => {
         // style={[styles.button, styles.buttonOpen]}
         onPress={() => setModalVisible(true)}
       >
-        <Text
-        // style={styles.textStyle}
-        >
-          Show Modal
-        </Text>
+        <Text style={styles.textStyle}>Show Modal</Text>
         <ModalScreen
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
@@ -97,7 +95,9 @@ const Onboarding = () => {
           Access a variety of guided meditations to help you relax and
           de-stress.
         </Text>
-        <Button title="Check activities" onPress={handleCompleteSetup} />
+        <TouchableOpacity onPress={() => handleCompleteSetup("Activities")}>
+          <Text style={styles.textStyle}>Check activities</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.section}>
@@ -113,33 +113,19 @@ const Onboarding = () => {
           Receive insights and recommendations tailored to your mental health
           journey.
         </Text>
-        <Button title="Take assessment" onPress={handleCompleteSetup} />
+
+        <TouchableOpacity onPress={() => handleCompleteSetup("Assessments")}>
+          <Text style={styles.textStyle}>Take assessment</Text>
+        </TouchableOpacity>
 
         <Text style={styles.featureTitle}>Community Support</Text>
         <Text style={styles.subtitle}>
           Connect with a community of individuals who understand and support
           your journey.
         </Text>
-        <Button title="Get Support" onPress={handleCompleteSetup} />
-      </View>
-
-      <View style={styles.profileSetup}>
-        <Text style={styles.title}>Set Up Your Profile</Text>
-
-        <TextInput
-          style={styles.input}
-          placeholder="Name"
-          value={name}
-          onChangeText={setName}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Age"
-          value={age}
-          onChangeText={setAge}
-          keyboardType="numeric"
-        />
-        <Button title="Complete Setup" onPress={handleCompleteSetup} />
+        <TouchableOpacity onPress={() => handleCompleteSetup("Community")}>
+          <Text style={styles.textStyle}>Join Community</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -151,18 +137,27 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#f5f5f5",
-    // padding: 16,
+    paddingTop: 7,
   },
   image: {
     width: "100%",
     aspectRatio: 1,
     marginBottom: 12,
     borderRadius: 8,
+    // marginTop: -14,
+  },
+  textStyle: {
+    backgroundColor: "green",
+    padding: 10,
+    color: "#fff",
+    borderRadius: 5,
+    fontSize: 16,
+    textAlign: "center",
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marginVertical: 16,
+    marginBottom: 16,
     textAlign: "center",
   },
   subtitle: {
@@ -195,20 +190,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginVertical: 8,
     paddingHorizontal: 16,
-  },
-  profileSetup: {
-    width: "100%",
-    alignItems: "center",
-    marginTop: 20,
-    paddingHorizontal: 16,
-  },
-  input: {
-    width: "100%",
-    padding: 8,
-    marginVertical: 8,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
   },
 });
 
