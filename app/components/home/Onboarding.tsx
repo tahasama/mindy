@@ -5,18 +5,20 @@ import {
   Button,
   ScrollView,
   TextInput,
+  Pressable,
 } from "react-native";
 import React, { useState } from "react";
-import { useNavigation } from "expo-router";
-import ProfileSetup from "./ProfileSetup";
+import { Link, useNavigation } from "expo-router";
+import ProfileSetup from "../ProfileSetup";
 import { Image } from "expo-image";
-import FeatureHighlight2 from "./FeatureHighlight2";
+import FeatureHighlight2 from "../FeatureHighlight2";
 import Animated, {
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useHandler,
   useSharedValue,
 } from "react-native-reanimated";
+import ModalScreen from "./modal";
 
 const Onboarding = () => {
   const blurhash =
@@ -24,10 +26,11 @@ const Onboarding = () => {
   const navigation = useNavigation<any>();
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
 
   const handleCompleteSetup = () => {
     // Implement profile setup logic
-    navigation.navigate("Dashboard"); // Redirect to the dashboard after setup
+    navigation.navigate("Activities"); // Redirect to the dashboard after setup
   };
 
   const width = useSharedValue(50);
@@ -42,16 +45,16 @@ const Onboarding = () => {
     <ScrollView contentContainerStyle={styles.container}>
       <Image
         style={styles.image}
-        source={require("../../assets/images/landing.jpg")}
+        source={require("../../../assets/images/landing.jpg")}
         placeholder={{ blurhash }}
         contentFit="contain"
         transition={1000}
       />
       <Text style={styles.title}>Your journey to well-being starts here.</Text>
-      <Text style={styles.subtitle}>
+      {/* <Text style={styles.subtitle}>
         Taking care of your mental health is essential for a balanced and
         fulfilling life.
-      </Text>
+      </Text> */}
 
       <Text style={styles.subtitle}>
         Looking to enhance your mindfulness? or simply find a moment of peace,
@@ -62,11 +65,25 @@ const Onboarding = () => {
         Mindy offers the tools and resources to help youe every step of the way
         !
       </Text>
-
+      {/* <Button title="Join Us" onPress={handleCompleteSetup} /> */}
+      <Pressable
+        // style={[styles.button, styles.buttonOpen]}
+        onPress={() => setModalVisible(true)}
+      >
+        <Text
+        // style={styles.textStyle}
+        >
+          Show Modal
+        </Text>
+        <ModalScreen
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+        />
+      </Pressable>
       <View style={styles.section}>
         <Image
           style={styles.image}
-          source={require("../../assets/images/meditation.jpg")}
+          source={require("../../../assets/images/meditation.jpg")}
           placeholder={{ blurhash }}
           contentFit="contain"
           transition={1000}
@@ -80,12 +97,13 @@ const Onboarding = () => {
           Access a variety of guided meditations to help you relax and
           de-stress.
         </Text>
+        <Button title="Check activities" onPress={handleCompleteSetup} />
       </View>
 
       <View style={styles.section}>
         <Image
           style={styles.image}
-          source={require("../../assets/images/mood.jpg")}
+          source={require("../../../assets/images/mood.jpg")}
           placeholder={{ blurhash }}
           contentFit="contain"
           transition={1000}
@@ -95,17 +113,19 @@ const Onboarding = () => {
           Receive insights and recommendations tailored to your mental health
           journey.
         </Text>
+        <Button title="Take assessment" onPress={handleCompleteSetup} />
+
         <Text style={styles.featureTitle}>Community Support</Text>
         <Text style={styles.subtitle}>
           Connect with a community of individuals who understand and support
           your journey.
         </Text>
+        <Button title="Get Support" onPress={handleCompleteSetup} />
       </View>
-      <Animated.View style={[styles.box, animatedStyle]} />
 
       <View style={styles.profileSetup}>
         <Text style={styles.title}>Set Up Your Profile</Text>
-        <Text style={styles.title}>{age} 000000</Text>
+
         <TextInput
           style={styles.input}
           placeholder="Name"
@@ -132,10 +152,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#f5f5f5",
     // padding: 16,
-  },
-  box: {
-    height: 50,
-    backgroundColor: "blue",
   },
   image: {
     width: "100%",
@@ -183,7 +199,7 @@ const styles = StyleSheet.create({
   profileSetup: {
     width: "100%",
     alignItems: "center",
-    marginTop: 32,
+    marginTop: 20,
     paddingHorizontal: 16,
   },
   input: {

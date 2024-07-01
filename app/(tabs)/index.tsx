@@ -10,8 +10,8 @@ import QuickActions from "../components/QuickActions";
 import RecentActivities from "../components/RecentActivities";
 import DailyTips from "../components/DailyTips";
 import ProgressChart from "../components/ProgressChart";
-import Dashboard from "../components/Dashboard";
-import Onboarding from "../components/Onboarding";
+import Onboarding from "../components/home/Onboarding";
+import Dashboard from "../components/home/Dashboard";
 
 export default function HomeScreen() {
   const isLoggedIn = false;
