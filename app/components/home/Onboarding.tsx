@@ -44,7 +44,7 @@ const Onboarding = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
+      {/* <StatusBar barStyle="dark-content" backgroundColor="#ffffff" /> */}
       <Image
         style={styles.image}
         source={require("../../../assets/images/landing.jpg")}
@@ -72,7 +72,7 @@ const Onboarding = () => {
         // style={[styles.button, styles.buttonOpen]}
         onPress={() => setModalVisible(true)}
       >
-        <Text style={styles.textStyle}>Show Modal</Text>
+        <Text style={styles.textStyle}>Let's Start !</Text>
         <ModalScreen
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
@@ -137,14 +137,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#f5f5f5",
-    paddingTop: 7,
+    paddingTop: 9,
   },
   image: {
     width: "100%",
     aspectRatio: 1,
     marginBottom: 12,
     borderRadius: 8,
-    // marginTop: -14,
   },
   textStyle: {
     backgroundColor: "green",
@@ -177,19 +176,6 @@ const styles = StyleSheet.create({
     marginBottom: 32,
     width: "100%",
     alignItems: "center",
-  },
-  benefit: {
-    fontSize: 16,
-    textAlign: "left",
-    marginVertical: 4,
-    paddingHorizontal: 16,
-  },
-  testimonial: {
-    fontSize: 16,
-    fontStyle: "italic",
-    textAlign: "center",
-    marginVertical: 8,
-    paddingHorizontal: 16,
   },
 });
 

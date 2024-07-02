@@ -5,8 +5,6 @@ import React, { useState } from "react";
 import { Button, StyleSheet, TextInput, Text } from "react-native";
 
 const index = () => {
-  const [name, setName] = useState("");
-  const [age, setAge] = useState("");
   const navigation = useNavigation<any>();
 
   // const user = {
@@ -14,7 +12,7 @@ const index = () => {
   //   age: "25",
   // };
 
-  const user = { name, age };
+  const user = { name: "", age: "" };
 
   const handleProfileSetup = () => {
     // Implement profile setup logic

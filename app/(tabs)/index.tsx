@@ -1,19 +1,8 @@
 import { Text, Image, StyleSheet, Platform, ScrollView } from "react-native";
-
-import { HelloWave } from "@/components/HelloWave";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
-import Header from "../components/Header";
-import MoodSummary from "../components/MoodSummary";
-import QuickActions from "../components/QuickActions";
-import RecentActivities from "../components/RecentActivities";
-import DailyTips from "../components/DailyTips";
-import ProgressChart from "../components/ProgressChart";
-import Onboarding from "../components/home/Onboarding";
 import Dashboard from "../components/home/Dashboard";
+import Onboarding from "../components/home/Onboarding";
 
-export default function HomeScreen() {
+export default function index() {
   const isLoggedIn = false;
   return <ScrollView>{isLoggedIn ? <Dashboard /> : <Onboarding />}</ScrollView>;
 }
