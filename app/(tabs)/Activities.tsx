@@ -19,6 +19,9 @@ import Constants from "expo-constants";
 import * as Device from "expo-device";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
+// import activity from "../../assets/images/activities/activities.jpg";
+import activity from "../../assets/images/activities/activity.png";
+import { Image } from "expo-image";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -305,83 +308,94 @@ const Activities = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.category}>
-        This is a test of your consistency to for self enhancement and
-        productivity
-      </Text>
-      <Text style={styles.category}>
-        6 categories of activities are be displayed for 6 days a week
-      </Text>
-      <Text style={styles.category}>
-        you need to achieve at least 1 activity per category a day to stay on
-        track
-      </Text>
-
-      {activities.map((section, categoryIndex) => (
-        <View key={categoryIndex} style={styles.section}>
-          <Text style={styles.category}>{section.category}</Text>
-          {section.items.map((item, itemIndex) => (
-            <View key={itemIndex} style={styles.item}>
-              <Checkbox
-                value={item.completed}
-                onValueChange={() => toggleComplete(categoryIndex, itemIndex)}
-              />
-              <Text
-                style={[styles.itemText, item.completed && styles.completed]}
-              >
-                {item.text}
-              </Text>
-              <View style={styles.actions}>
-                <TouchableOpacity
-                  onPress={() =>
-                    showDatePicker(section, item, categoryIndex, itemIndex)
-                  }
-                >
-                  <MaterialIcons name="schedule" size={20} color="blue" />
-                </TouchableOpacity>
-                {show &&
-                  itemIndex === selectedItem &&
-                  categoryIndex === selectedCategory && (
-                    <>
-                      <Text></Text>
-                      <RNDateTimePicker
-                        mode="time"
-                        value={date}
-                        display={"default"}
-                        onChange={onChange}
-                      />
-                    </>
-                  )}
-                <TouchableOpacity
-                  onPress={() => removeItem(categoryIndex, itemIndex)}
-                >
-                  <AntDesign name="delete" size={16} color="red" />
-                </TouchableOpacity>
-              </View>
-            </View>
-          ))}
-          <TouchableOpacity
-            onPress={() => {
-              setModalVisible(categoryIndex),
-                setSelectedCategory(categoryIndex);
-            }}
-          >
-            <Text>+ Add Activity</Text>
-            <ModalScreen
-              modalVisible={modalVisible}
-              setModalVisible={setModalVisible}
-              categoryIndex={categoryIndex}
-              section={section.category}
-              setNewItemText={setNewItemText}
-              newItemText={newItemText}
-              addItem={addItem}
-              addToList={addToList}
-              secondaryActivities={secondaryActivities}
-            />
-          </TouchableOpacity>
+    <ScrollView>
+      <Image
+        style={styles.image}
+        source={activity}
+        // placeholder={{ blurhash }}
+        contentFit="contain"
+        transition={1000}
+      />
+      <View style={styles.container}>
+        <View style={styles.explanationContainer}>
+          <Text style={styles.explanationText}>
+            Strengthen your consistency to unleash your self-enhancement
+            potential and productivity.
+          </Text>
+          <Text style={styles.explanationText}>
+            6 categories of activities are displayed for 6 days a week.
+          </Text>
+          <Text style={styles.highlightText}>
+            You need to achieve at least 1 activity per category a day to stay
+            on track.
+          </Text>
         </View>
-      ))}
+
+        {activities.map((section, categoryIndex) => (
+          <View key={categoryIndex} style={styles.section}>
+            <Text style={styles.category}>{section.category}</Text>
+            {section.items.map((item, itemIndex) => (
+              <View key={itemIndex} style={styles.item}>
+                <Checkbox
+                  value={item.completed}
+                  onValueChange={() => toggleComplete(categoryIndex, itemIndex)}
+                />
+                <Text
+                  style={[styles.itemText, item.completed && styles.completed]}
+                >
+                  {item.text}
+                </Text>
+                <View style={styles.actions}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      showDatePicker(section, item, categoryIndex, itemIndex)
+                    }
+                  >
+                    <MaterialIcons name="schedule" size={20} color="blue" />
+                  </TouchableOpacity>
+                  {show &&
+                    itemIndex === selectedItem &&
+                    categoryIndex === selectedCategory && (
+                      <>
+                        <Text></Text>
+                        <RNDateTimePicker
+                          mode="time"
+                          value={date}
+                          display={"default"}
+                          onChange={onChange}
+                        />
+                      </>
+                    )}
+                  <TouchableOpacity
+                    onPress={() => removeItem(categoryIndex, itemIndex)}
+                  >
+                    <AntDesign name="delete" size={16} color="red" />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))}
+            <TouchableOpacity
+              onPress={() => {
+                setModalVisible(categoryIndex),
+                  setSelectedCategory(categoryIndex);
+              }}
+            >
+              <Text style={styles.addActivityButton}>+ Add Activity</Text>
+              <ModalScreen
+                modalVisible={modalVisible}
+                setModalVisible={setModalVisible}
+                categoryIndex={categoryIndex}
+                section={section.category}
+                setNewItemText={setNewItemText}
+                newItemText={newItemText}
+                addItem={addItem}
+                addToList={addToList}
+                secondaryActivities={secondaryActivities}
+              />
+            </TouchableOpacity>
+          </View>
+        ))}
+      </View>
     </ScrollView>
   );
 };
@@ -454,10 +468,38 @@ const styles = StyleSheet.create({
     color: "#fff",
     textAlign: "center",
   },
+  addActivityButton: {
+    backgroundColor: "#2196F3",
+    padding: 7,
+    borderRadius: 8,
+    color: "#fff",
+    marginTop: 6,
+    width: 110,
+    elevation: 1,
+  },
   actions: {
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
+  },
+  image: {
+    width: "100%",
+    aspectRatio: 1,
+    // marginBottom: 12,
+    // borderRadius: 8,
+  },
+  explanationContainer: {
+    marginBottom: 20,
+    paddingHorizontal: 15,
+  },
+  explanationText: {
+    fontSize: 16,
+    color: "#555",
+    marginBottom: 10,
+  },
+  highlightText: {
+    color: "red",
+    fontWeight: "bold",
   },
 });
 
