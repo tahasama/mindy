@@ -20,8 +20,9 @@ import * as Device from "expo-device";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 // import activity from "../../assets/images/activities/activities.jpg";
-import activity from "../../assets/images/activities/activity.png";
+import activity from "../../assets/images/activities/activity1.png";
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -316,6 +317,11 @@ const Activities = () => {
         contentFit="contain"
         transition={1000}
       />
+      <LinearGradient
+        // Background Linear Gradient
+        colors={["#6ab4c1", "#f5f5f5"]}
+        style={{ height: 120 }}
+      />
       <View style={styles.container}>
         <View style={styles.explanationContainer}>
           <Text style={styles.explanationText}>
@@ -490,6 +496,7 @@ const styles = StyleSheet.create({
   },
   explanationContainer: {
     marginBottom: 20,
+    marginTop: -160,
     paddingHorizontal: 15,
   },
   explanationText: {
