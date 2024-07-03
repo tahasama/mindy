@@ -76,13 +76,61 @@ async function registerForPushNotificationsAsync() {
 }
 
 const Activities = () => {
-  const [activities, setActivities] = useState([
+  const initialActivities = [
     {
       category: "Daily Routine Suggestions",
       items: [
         { text: "Morning Routine", completed: false },
         { text: "Evening Wind Down", completed: false },
         { text: "Healthy Breakfast", completed: false },
+      ],
+    },
+    {
+      category: "Exercise and Physical Activities",
+      items: [
+        { text: "Cardio Workouts", completed: false },
+        { text: "Strength Training", completed: false },
+        { text: "Stretching", completed: false },
+      ],
+    },
+    {
+      category: "Mindfulness and Relaxation",
+      items: [
+        { text: "Meditation Sessions", completed: false },
+        { text: "Breathing Exercises", completed: false },
+        { text: "Nature Walks", completed: false },
+      ],
+    },
+    {
+      category: "Creative Activities",
+      items: [
+        { text: "Art and Craft", completed: false },
+        { text: "Writing Prompts", completed: false },
+        { text: "Music and Dance", completed: false },
+      ],
+    },
+    {
+      category: "Social and Community Engagement",
+      items: [
+        { text: "Connect with Friends", completed: false },
+        { text: "Community Events", completed: false },
+        { text: "Volunteering Opportunities", completed: false },
+      ],
+    },
+    {
+      category: "Educational Resources",
+      items: [
+        { text: "Books and Articles", completed: false },
+        { text: "Online Courses", completed: false },
+        { text: "Podcasts and Videos", completed: false },
+      ],
+    },
+  ];
+
+  const secondaryActivities = [
+    {
+      category: "Daily Routine Suggestions",
+      items: [
         { text: "Midday Break", completed: false },
         { text: "Hydration Reminder", completed: false },
         { text: "Journal Entry", completed: false },
@@ -92,9 +140,6 @@ const Activities = () => {
     {
       category: "Exercise and Physical Activities",
       items: [
-        { text: "Cardio Workouts", completed: false },
-        { text: "Strength Training", completed: false },
-        { text: "Stretching", completed: false },
         { text: "Yoga Session", completed: false },
         { text: "Outdoor Run", completed: false },
         { text: "Cycling", completed: false },
@@ -104,9 +149,6 @@ const Activities = () => {
     {
       category: "Mindfulness and Relaxation",
       items: [
-        { text: "Meditation Sessions", completed: false },
-        { text: "Breathing Exercises", completed: false },
-        { text: "Nature Walks", completed: false },
         { text: "Listening to Calm Music", completed: false },
         { text: "Reading a Book", completed: false },
         { text: "Taking a Bath", completed: false },
@@ -116,9 +158,6 @@ const Activities = () => {
     {
       category: "Creative Activities",
       items: [
-        { text: "Art and Craft", completed: false },
-        { text: "Writing Prompts", completed: false },
-        { text: "Music and Dance", completed: false },
         { text: "Photography", completed: false },
         { text: "Cooking New Recipes", completed: false },
         { text: "Gardening", completed: false },
@@ -128,9 +167,6 @@ const Activities = () => {
     {
       category: "Social and Community Engagement",
       items: [
-        { text: "Connect with Friends", completed: false },
-        { text: "Community Events", completed: false },
-        { text: "Volunteering Opportunities", completed: false },
         { text: "Family Time", completed: false },
         { text: "Networking Events", completed: false },
         { text: "Social Media Interaction", completed: false },
@@ -140,16 +176,15 @@ const Activities = () => {
     {
       category: "Educational Resources",
       items: [
-        { text: "Books and Articles", completed: false },
-        { text: "Online Courses", completed: false },
-        { text: "Podcasts and Videos", completed: false },
         { text: "Webinars and Workshops", completed: false },
         { text: "Language Learning", completed: false },
         { text: "Research Projects", completed: false },
         { text: "Documentaries", completed: false },
       ],
     },
-  ]);
+  ];
+
+  const [activities, setActivities] = useState(initialActivities);
 
   const [expoPushToken, setExpoPushToken] = useState("");
   const [channels, setChannels] = useState<Notifications.NotificationChannel[]>(
@@ -232,6 +267,16 @@ const Activities = () => {
     }
   };
 
+  const addToList = (categoryIndex: any, item: any) => {
+    console.log("🚀 ~ addToList ~ item:", item);
+    const newActivities = [...activities];
+    newActivities[categoryIndex].items.push({
+      text: item.text,
+      completed: false,
+    });
+    setActivities(newActivities);
+  };
+
   const removeItem = (categoryIndex: any, itemIndex: any) => {
     const newActivities = [...activities];
     newActivities[categoryIndex].items.splice(itemIndex, 1);
@@ -261,6 +306,18 @@ const Activities = () => {
 
   return (
     <ScrollView style={styles.container}>
+      <Text style={styles.category}>
+        This is a test of your consistency to for self enhancement and
+        productivity
+      </Text>
+      <Text style={styles.category}>
+        6 categories of activities are be displayed for 6 days a week
+      </Text>
+      <Text style={styles.category}>
+        you need to achieve at least 1 activity per category a day to stay on
+        track
+      </Text>
+
       {activities.map((section, categoryIndex) => (
         <View key={categoryIndex} style={styles.section}>
           <Text style={styles.category}>{section.category}</Text>
@@ -319,6 +376,8 @@ const Activities = () => {
               setNewItemText={setNewItemText}
               newItemText={newItemText}
               addItem={addItem}
+              addToList={addToList}
+              secondaryActivities={secondaryActivities}
             />
           </TouchableOpacity>
         </View>

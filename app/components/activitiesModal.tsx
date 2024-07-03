@@ -19,6 +19,8 @@ const ModalScreen = ({
   setNewItemText,
   newItemText,
   addItem,
+  addToList,
+  secondaryActivities,
 }: any) => {
   return (
     <View style={styles.centeredView}>
@@ -53,6 +55,29 @@ const ModalScreen = ({
             >
               <Text style={styles.textStyle}>Add to list</Text>
             </TouchableOpacity>
+            <Text
+              style={{
+                textAlign: "left",
+                width: "100%",
+                marginTop: 14,
+                marginBottom: 10,
+              }}
+            >
+              Or tap to choose:
+            </Text>
+            <View style={styles.listContainer}>
+              {secondaryActivities[categoryIndex].items.map(
+                (item: any, index: any) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={[styles.listOfChoices]}
+                    onPress={() => addToList(categoryIndex, item)}
+                  >
+                    <Text style={styles.textStyle}>{item.text}</Text>
+                  </TouchableOpacity>
+                )
+              )}
+            </View>
           </View>
         </View>
       </Modal>
@@ -134,5 +159,19 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
+  },
+  listContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    gap: 6,
+    padding: 10,
+  },
+  listOfChoices: {
+    width: "auto",
+    color: "black",
+    backgroundColor: "#4EA8CD",
+    padding: 6,
+    borderRadius: 6,
   },
 });
