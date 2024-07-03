@@ -21,13 +21,19 @@ import facebook from "../../../assets/images/loginLogos/facebook.png";
 import X from "../../../assets/images/loginLogos/X.png";
 import signup from "../../../assets/images/loginLogos/signup.jpg";
 
-export default function ModalScreen({ modalVisible, setModalVisible }: any) {
+export default function ModalScreen({
+  modalVisible,
+  setModalVisible,
+  signInValue,
+}: any) {
   const router = useRouter();
   const navigation = useNavigation<any>();
 
   const isPresented = router.canGoBack();
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
+  const [signIn, setSignIn] = useState(signInValue);
+
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -67,20 +73,22 @@ export default function ModalScreen({ modalVisible, setModalVisible }: any) {
             onPress={() => setModalVisible(false)}
             style={styles.close}
           />
-          <Text style={styles.title}>Sign Up</Text>
+          <Text style={styles.title}>{signIn ? "Log In" : "Sign Up"}</Text>
           <TextInput
             style={styles.input}
-            placeholder="Username"
+            placeholder={signup ? "Username or Email" : "Username"}
             value={username}
             onChangeText={setUsername}
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-          />
+          {!signIn && (
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+            />
+          )}
           <TextInput
             style={styles.input}
             placeholder="Password"
@@ -89,18 +97,21 @@ export default function ModalScreen({ modalVisible, setModalVisible }: any) {
             secureTextEntry
           />
 
-          <Text
-            style={{
-              color: "#219AF3",
-              textDecorationLine: "underline",
-              fontWeight: "500",
-              fontSize: 14,
-              marginTop: 10,
-              textAlign: "center",
-            }}
-          >
-            Forgot your Password?
-          </Text>
+          {signIn && (
+            <Text
+              style={{
+                color: "#219AF3",
+                textDecorationLine: "underline",
+                fontWeight: "500",
+                fontSize: 14,
+                marginTop: 10,
+                textAlign: "center",
+                paddingVertical: 16,
+              }}
+            >
+              Forgot your Password?
+            </Text>
+          )}
 
           <TouchableOpacity
             onPress={onCompleteSignUp}
@@ -117,22 +128,32 @@ export default function ModalScreen({ modalVisible, setModalVisible }: any) {
         <>
           <View style={styles.imageContainer}>
             {socialLogin.map((logo, index) => (
-              <Image
-                key={index}
-                style={[
-                  styles.image,
-                  { transform: [{ scale: index === 3 ? 0.8 : 1 }] },
-                ]}
-                source={logo}
-                // placeholder={{ blurhash }}
-                contentFit="contain"
-                transition={1000}
-              />
+              <TouchableOpacity key={index}>
+                <Image
+                  style={[
+                    styles.image,
+                    { transform: [{ scale: index === 3 ? 0.8 : 1 }] },
+                  ]}
+                  source={logo}
+                  // placeholder={{ blurhash }}
+                  contentFit="contain"
+                  transition={1000}
+                />
+              </TouchableOpacity>
             ))}
           </View>
         </>
-        <Text style={{ fontWeight: "400" }}>Already have an account?</Text>
-        <TouchableOpacity onPress={() => {}} style={{ top: 10 }}>
+
+        <Text style={{ fontWeight: "400", top: 10 }}>
+          {!signIn ? "Already" : "Don't"} have an account?
+        </Text>
+
+        <TouchableOpacity
+          onPress={() => {
+            setSignIn(!signIn);
+          }}
+          style={{ top: 20, zIndex: 1 }}
+        >
           <Text
             style={{
               color: "#2196F3",
@@ -141,7 +162,8 @@ export default function ModalScreen({ modalVisible, setModalVisible }: any) {
               fontSize: 16,
             }}
           >
-            Log In
+            {!signIn ? "Log In" : "Sign Up"}
+            {signIn}
           </Text>
         </TouchableOpacity>
 
@@ -178,6 +200,7 @@ const styles = StyleSheet.create({
   close: {
     alignSelf: "flex-end",
     top: 16,
+    zIndex: 1,
   },
   input: {
     width: "100%",
@@ -217,7 +240,6 @@ const styles = StyleSheet.create({
   signupImage: {
     width: "100%",
     aspectRatio: 1,
-    bottom: 26,
-    zIndex: 0,
+    bottom: 6,
   },
 });

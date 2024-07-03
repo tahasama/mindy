@@ -1,3 +1,4 @@
+import Modal from "@/app/components/home/modal";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useNavigation } from "expo-router";
@@ -7,12 +8,13 @@ import { Button, StyleSheet, TextInput, Text } from "react-native";
 const index = () => {
   const navigation = useNavigation<any>();
 
-  // const user = {
-  //   name: "John Doe",
-  //   age: "25",
-  // };
+  const user = {
+    id: "1",
+    name: "John Doe",
+    age: "25",
+  };
 
-  const user = { name: "", age: "" };
+  // const user = { id: "", name: "", age: "" };
 
   const handleProfileSetup = () => {
     // Implement profile setup logic
@@ -21,10 +23,12 @@ const index = () => {
 
   return (
     <ThemedView style={styles.container}>
-      <Text>Your account details</Text>
-
-      {user.name === "" && (
+      {user.id === "" ? (
+        <Modal signInValue={true} />
+      ) : (
         <>
+          <Text>Your account details</Text>
+
           <Text>
             your profile is incomplete, for better result please complete your
             profile
