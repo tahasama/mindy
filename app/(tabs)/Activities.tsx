@@ -1,5 +1,5 @@
 import Checkbox from "expo-checkbox";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -8,9 +8,72 @@ import {
   TextInput,
   TouchableOpacity,
   Keyboard,
+  Platform,
+  Button,
 } from "react-native";
 import ModalScreen from "../components/activitiesModal";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+
+import * as Notifications from "expo-notifications";
+import Constants from "expo-constants";
+import * as Device from "expo-device";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import RNDateTimePicker from "@react-native-community/datetimepicker";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
+async function registerForPushNotificationsAsync() {
+  let token;
+
+  if (Platform.OS === "android") {
+    await Notifications.setNotificationChannelAsync("default", {
+      name: "default",
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: "#FF231F7C",
+    });
+  }
+
+  if (Device.isDevice) {
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== "granted") {
+      alert("Failed to get push token for push notification!");
+      return;
+    }
+    try {
+      const projectId =
+        Constants?.expoConfig?.extra?.eas?.projectId ??
+        Constants?.easConfig?.projectId;
+
+      if (!projectId) {
+        throw new Error("Project ID not found");
+      }
+      token = (
+        await Notifications.getExpoPushTokenAsync({
+          projectId,
+        })
+      ).data;
+    } catch (e) {
+      token = `${e}`;
+    }
+  } else {
+    alert("Must use physical device for Push Notifications");
+  }
+
+  return token;
+}
 
 const Activities = () => {
   const [activities, setActivities] = useState([
@@ -88,10 +151,65 @@ const Activities = () => {
     },
   ]);
 
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [channels, setChannels] = useState<Notifications.NotificationChannel[]>(
+    []
+  );
+
+  const [notification, setNotification] = useState<
+    Notifications.Notification | undefined
+  >(undefined);
+  const notificationListener = useRef<Notifications.Subscription>();
+  const responseListener = useRef<Notifications.Subscription>();
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then(
+      (token) => token && setExpoPushToken(token)
+    );
+
+    if (Platform.OS === "android") {
+      Notifications.getNotificationChannelsAsync().then((value) =>
+        setChannels(value ?? [])
+      );
+    }
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    return () => {
+      notificationListener.current &&
+        Notifications.removeNotificationSubscription(
+          notificationListener.current
+        );
+      responseListener.current &&
+        Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+
+  async function schedulePushNotification(currentDate: any) {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Activity Reminder",
+        body: `📝 Reminder for: ${activities[selectedCategory].items[selectedItem].text}\n  Section ${activities[selectedCategory].category} `,
+      },
+      trigger: currentDate,
+    });
+  }
+
   const [modalVisible, setModalVisible] = useState<Number | null>(null);
 
   const [newItemText, setNewItemText] = useState("");
+  const [selectedItem, setSelectedItem] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState(0);
+  const [show, setShow] = useState(false);
+
+  const [date, setDate] = useState(new Date());
 
   const toggleComplete = (categoryIndex: any, itemIndex: any) => {
     const newActivities = [...activities];
@@ -120,6 +238,27 @@ const Activities = () => {
     setActivities(newActivities);
   };
 
+  const showDatePicker = (
+    section: any,
+    item: any,
+    categoryIndex: any,
+    itemIndex: any
+  ) => {
+    setSelectedItem(itemIndex);
+    setSelectedCategory(categoryIndex);
+    setShow(true);
+  };
+
+  const onChange = async (event: any, selectedDate: any) => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === "ios");
+    setDate(currentDate);
+
+    if (event.type === "set") {
+      await schedulePushNotification(currentDate);
+    }
+  };
+
   return (
     <ScrollView style={styles.container}>
       {activities.map((section, categoryIndex) => (
@@ -136,14 +275,41 @@ const Activities = () => {
               >
                 {item.text}
               </Text>
-              <TouchableOpacity
-                onPress={() => removeItem(categoryIndex, itemIndex)}
-              >
-                <AntDesign name="delete" size={16} color="red" />
-              </TouchableOpacity>
+              <View style={styles.actions}>
+                <TouchableOpacity
+                  onPress={() =>
+                    showDatePicker(section, item, categoryIndex, itemIndex)
+                  }
+                >
+                  <MaterialIcons name="schedule" size={20} color="blue" />
+                </TouchableOpacity>
+                {show &&
+                  itemIndex === selectedItem &&
+                  categoryIndex === selectedCategory && (
+                    <>
+                      <Text></Text>
+                      <RNDateTimePicker
+                        mode="time"
+                        value={date}
+                        display={"default"}
+                        onChange={onChange}
+                      />
+                    </>
+                  )}
+                <TouchableOpacity
+                  onPress={() => removeItem(categoryIndex, itemIndex)}
+                >
+                  <AntDesign name="delete" size={16} color="red" />
+                </TouchableOpacity>
+              </View>
             </View>
           ))}
-          <TouchableOpacity onPress={() => setModalVisible(categoryIndex)}>
+          <TouchableOpacity
+            onPress={() => {
+              setModalVisible(categoryIndex),
+                setSelectedCategory(categoryIndex);
+            }}
+          >
             <Text>+ Add Activity</Text>
             <ModalScreen
               modalVisible={modalVisible}
@@ -164,7 +330,8 @@ const Activities = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 36,
     backgroundColor: "#f5f5f5",
   },
   section: {
@@ -227,6 +394,11 @@ const styles = StyleSheet.create({
   addButtonText: {
     color: "#fff",
     textAlign: "center",
+  },
+  actions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
   },
 });
 
