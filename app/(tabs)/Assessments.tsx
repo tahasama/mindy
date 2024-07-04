@@ -1,19 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  Pressable,
 } from "react-native";
 import { Image } from "expo-image";
 
 import { useNavigation } from "@react-navigation/native";
 import assessment from "../../assets/images/assessment/assessment.jpg";
 import { LinearGradient } from "expo-linear-gradient";
+import DailyAsessment from "../components/assessments/DailyAssessment";
+import ModalAssessment from "../components/assessments/modal";
 
 const AssessmentScreen = () => {
   const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <ScrollView>
@@ -32,19 +36,27 @@ const AssessmentScreen = () => {
       <View style={styles.container}>
         <View style={styles.explanationContainer}>
           <Text style={styles.explanationText}>
-            Embrace a consistent approach to unlock your full potential and
-            enhance productivity.
+            Take daily and weekly assessments cover various activity categories.
           </Text>
           <Text style={styles.explanationText}>
-            Discover diverse categories of activities designed for daily and
-            weekly assessments.
+            Your answers will help us improve our recommendations and track your
+            progress.
           </Text>
           <Text style={styles.highlightText}>
-            Aim to complete activities across all categories daily to maintain
-            progress and achieve your goals.
+            Aim to complete as much as possible for more precise results.
           </Text>
         </View>
       </View>
+      <Pressable
+        // style={[styles.button, styles.buttonOpen]}
+        onPress={() => setModalVisible(true)}
+      >
+        <Text style={styles.textStyle}>Take you daily assessment!</Text>
+        <DailyAsessment
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+        />
+      </Pressable>
     </ScrollView>
   );
 };
@@ -75,6 +87,15 @@ const styles = StyleSheet.create({
   highlightText: {
     color: "red",
     fontWeight: "bold",
+  },
+
+  textStyle: {
+    backgroundColor: "green",
+    padding: 10,
+    color: "#fff",
+    borderRadius: 5,
+    fontSize: 16,
+    textAlign: "center",
   },
 });
 
